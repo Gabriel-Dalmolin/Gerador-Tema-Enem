@@ -7,24 +7,57 @@
     <title>Gerador de temas do enem</title>
     <link rel="stylesheet" href="output.css">
     <link rel="icon" type="image/x-icon" href="enem.png">
+
+    <style>
+        .loader {
+            width: 50px;
+            padding: 8px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: #00BFFF;
+            --_m:
+                conic-gradient(#0000 10%, #000),
+                linear-gradient(#000 0 0) content-box;
+            -webkit-mask: var(--_m);
+            mask: var(--_m);
+            -webkit-mask-composite: source-out;
+            mask-composite: subtract;
+            animation: l3 1s infinite linear;
+            display: none;
+        }
+
+        @keyframes l3 {
+            to {
+                transform: rotate(1turn);
+            }
+        }
+    </style>
 </head>
 
 <body class="flex flex-col items-center justify-center min-h-screen">
-    <div class="bg-gray-200 rounded-lg p-4 flex flex-col">
-        <h1 class="bold text-lg sm:text-xl md:text-3xl mb-5">Gere 10 temas no modelo enem a partir de um assunto</h1>
+    <h1 class="font-bold text-lg sm:text-xl md:text-3xl mb-5 text-center">
+        Gere <span class="text-[#009AEE] font-extrabold">10 temas</span> no modelo enem a partir de um
+        assunto
+    </h1>
+    <div class="bg-gray-200 rounded-lg p-4 flex flex-col shadow-xl w-[90%] sm:w-[70%] md:w-[40%]">
 
         <div class="flex justify-between bold text-md sm:text-lg md:text-xl mb-5 w-full">
             <span class="mr-[5%]">Assunto:</span>
             <input type="text" id="theme-input" class="w-full rounded-lg">
-            <div id="warning" class="text-extrabold text-md sm:text-lg md:text-xl"></div>
+        </div>
+
+        <div id="warning" class="font-bold text-md sm:text-lg md:text-xl text-red-500 hidden mb-2 w-full text-center">
+            Por favor, insira um tema
         </div>
 
         <button
-            class="self-center bg-teal-400 p-2 bold text-md sm:text-lg md:text-2xl rounded-lg hover:scale-110 active:scale-100 hover:bg-teal-500 transition-all mb-10"
+            class="self-center bg-[#00BFFF] p-2 bold text-md sm:text-lg md:text-2xl rounded-lg hover:scale-110 active:scale-100 hover:bg-[#009AEE] transition-all mb-10"
             id="submit-button" type="submit">Gerar
         </button>
 
-        <textarea name="answer" id="answer" class="h-[50vh] rounded-lg"></textarea>
+        <div class="loader absolute right-[48%] top-1/2" id="loader"></div>
+
+        <textarea name="answer" id="answer" class="h-[50vh] rounded-lg p-2 resize-none" readonly></textarea>
     </div>
 
     <script src="https://js.puter.com/v2/"></script>
@@ -33,6 +66,7 @@
         const submitButton = document.querySelector("#submit-button");
         const warning = document.querySelector("#warning");
         const answer = document.querySelector("#answer");
+        const loader = document.querySelector("#loader");
 
         const iaPrompt = `
         : Apartir deste assunto, 
@@ -51,12 +85,32 @@
         `
 
         submitButton.addEventListener('click', function (e) {
-            console.log(themeInput.value);
-            puter.ai.chat(themeInput.value + iaPrompt)
-                .then(response => {
-                    answer.textContent = response;
-                })
+            const theme = themeInput.value;
+            if (!theme) {
+                warning.classList.remove("hidden");
+            } else {
+
+                console.log(theme);
+                loader.style.display = 'block';
+                puter.ai.chat(theme + iaPrompt)
+                    .then(response => {
+                        answer.textContent = response;
+                        loader.style.display = 'none';
+                    })
+            }
         });
+
+        themeInput.addEventListener("click", function (e) {
+            if (!warning.classList.contains("hidden")) {
+                warning.classList.add("hidden");
+            }
+        })
+
+        document.addEventListener("keypress", function (e) {
+            if (e.key == "Enter") {
+                submitButton.click();
+            }
+        })
     </script>
 </body>
 
