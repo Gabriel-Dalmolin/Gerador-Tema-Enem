@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="output.css">
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-gray-200 rounded-lg p-4 flex flex-col">
+        <h1 class="bold text-lg sm:text-xl md:text-3xl mb-5">Gere 10 temas no modelo enem a partir de um assunto</h1>
+
+        <div class="flex justify-between bold text-md sm:text-lg md:text-xl mb-5 w-full">
+            <span class="mr-[5%]">Assunto:</span>
+            <input type="text" id="theme-input" class="w-full rounded-lg">
+            <div id="warning" class="text-extrabold text-md sm:text-lg md:text-xl"></div>
+        </div>
+
+        <button
+            class="self-center bg-teal-400 p-2 bold text-md sm:text-lg md:text-2xl rounded-lg hover:scale-110 active:scale-100 hover:bg-teal-500 transition-all mb-10"
+            id="submit-button">Gerar
+        </button>
+
+        <textarea name="answer" id="answer" class="h-[50vh] rounded-lg"></textarea>
+    </div>
+
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+        const themeInput = document.querySelector("#theme-input");
+        const submitButton = document.querySelector("#submit-button");
+        const warning = document.querySelector("#warning");
+        const answer = document.querySelector("#answer");
+
+        const iaPrompt = `
+        : Apartir deste assunto, 
+
+        Gere uma lista de 10 temas no modelo enem seguindo o padrão desses:
+
+        Desafios para a valorização de comunidades e povos tradicionais no Brasil
+        Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil
+        O bem-estar da pessoa idosa na sociedade contemporânea: desafios e perspectivas
+        O estigma associado às doenças mentais na sociedade brasileira
+        Democratização do acesso ao cinema no Brasil
+        Manipulação do comportamento do usuário pelo controle de dados na internet
+        Desafios para a formação educacional de surdos no Brasil
+        Caminhos para combater a intolerância religiosa no Brasil
+
+        `
+
+        submitButton.addEventListener('click', function (e) {
+            console.log(themeInput.value);
+            puter.ai.chat(themeInput.value + iaPrompt)
+                .then(response => {
+                    answer.textContent = response;
+                })
+        });
+    </script>
+</body>
+
+</html>
